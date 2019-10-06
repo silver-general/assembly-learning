@@ -1,27 +1,93 @@
 # hardware overview
+see official schematics for details and pictures
+- - - - -
 
-informations are transmitted via BUS, an (assume) 8-bit (0-255 possibilities) line that connects all the elements.
+ATtiny85
 
-REGISTER FILE
+* RISC architecture, CMOS 8 bit
 
-ALU
+* in-system programmable FLASH : 8kbyte -> acts as program memory!
+* EEPROM : 512 bytes
+* SRAM : 256 bytes -> contains the STACK! -> 5 different addressing modes
 
-DATA MEMORY (sram)
+* general purpose I/O lines : 6 of them
+* 32 general purpose registers 
+* one 8bit timer/counter with compare mode
+* one 8bit high-speed timer/counter
+* universal serial interface
+* internal and external interrupts
+* ADC, 4 channel, 10 bit (analog to digital converter)
+* programmable watchdog timer with internal oscillator
 
-PROGRAM MEMORY 
-the place where instructions and data are loaded.
-FLASH, assume 16bit (2bytes) cells, assume 32kbyte total size
+* 3 power saving modes:
+  * idle: stops CPU, keeps active: SRAM, timer/counter,ADC,analog comparator,Interrupt System
+  * power down: saves registers content, until next Interrupt, Software reset
+  * ADC noise reduction: stops CPU and all I/O modes, except for ADC to minimize noise
+  
 
-INSTRUCTION REGISTER
-received instruction from program memory. assume 16 bits cells (as program memory cells)
+# ARCHITECTURE
 
+* Harvard: different memory places for program and data
+* PROGRAM MEMORY is the in-system reprogrammable Flash memory. instruction from program memory are executed with a single level pipelining
+* register file: 32 8bit registers, single clock access time -> single cycle ALU operations:
+  2 values from register file, operation done and result stored in register file in a clock cycle!
+  6 registers (X,Y,Z) can be used 2 at a time to store 16 bit addresses to the FLASH program memory.
+* ALU: performs operations between 2 register, 1 register, 1 register and a constant (can be read by ..?..)
+* status register is updated at the end of the operation to reflect info about the operation (eg comparison)
 
+* intruction are 16 bits, but they can be 32 (see Evernote notes - to be added later!) !!!!!! <<<<<<<--------
+* interruptions and subroutines: the program counter address is saved in the STACK, later to be retrieved
+  -> the stack is a chunk of memory in SRAM!
+* memory spaces are regular memory map. SEE https://en.wikipedia.org/wiki/Memory-mapped_I/O -> "Memory-mapped I/O uses the same address space to address both memory and I/O devices."
 
-RECAP: WHAT HAPPENS WHEN YOU TURN ON THE MICROPROCESSOR
----- how is the first command loaded??
-1. the intructions are in the *program memory*. they are selected by the *program counter* and sent to the *instruction register*
-2. instruction register sends instruction to *instruction decoder*
-3. instruction decoder decodes the instruction. there are 3 formats of instructions. see later.
-4. register files are used to store temporary data.
+*flexible interrupt module has its control registers in the I/O space, with an additional Global Interrupt Enable bit in the status register
+  all interrupts have their interrupt vector in the interrupt vector table
+  interrupts have a priority in accordance to their position in the interrupt vector table -> lower the address, higher the priority
+* I/O memory space has 64 addresses for CPU peripherals functions 
+  I/O moemory can be accessed directly, or as the Data Space locations following those of the Register File, 0x20 - 0x5F.
 
-...
+4.3 ALU
+* operations: arithmetic, logic, bit-function. see "instruction set" for more
+* operations done in a clock cycle
+
+4.4 STATUS REGISTER
+* SR is not saved if an interruption occurs! it must be handled by the software!
+* see 4.4.1 for details about the bits of status register. 
+  * I: global interrupt enable: seasrch "interruption in AVR microprocessors"
+  * T: bit copy storage: a bit from a register can be stored/retrieved from/to a register via BST(bit store) and BLD(bit load)
+  * H: half carry flag: used diring half carry in arithmetics
+  * S: bit sign: see instruction set description
+  * V: 2's complement overflow tag
+  * N: negative flag
+  * Z: zero flag
+  * C: carry flag
+  
+4.5 GENERAL PURPOSE REGISTER
+* location: first 32 addresses of the data space
+* each cell: 8bits
+
+* I/O possibilities:
+  * one 8bit output operand, one 8bit input result operand
+  * two 8bit output operand, one 8bit input result operand
+  * two 8bit output operand, one 16bit input result operand
+  * one 16bit output operand, one 16bit input result operand
+  
+* see evernote notes for exceptions and stuff like x,y,z registers (to be added later!!) ------>>>> !!!!
+
+4.6 STACK POINTER
+* the stack pointer register has address of the top of the stack, in the SRAM! MUST be always above 0x60
+* the stack grows from higher to lower addresses -> PUSH puts something on top -> DECREASES the address!
+* SP is implemented as two 8 bit registers in the I/O space: SPL and SPH (low and high bits)
+
+4.7 INSTRUCTION EXECUTION TIMING
+* pipelining, 2 levels
+
+4.8 RESET AND INTERRUPT
+4.8.1
+
+- - - - -
+
+5 AVR MEMORIES
+* DATA memory, Program memory, EEPROM for data storage.
+
+5.1 in-system re-programmable Flash program memory
