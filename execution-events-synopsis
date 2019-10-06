@@ -6,3 +6,11 @@ I want to answer to questions such as:
   who is in charge of selecting the first instruction? is that address a default value?
   
 I still have to figure that out myself.
+
+
+* what is the most basic program one can write?
+* how is the program loaded into program memory (flash memory)? from address 0?
+
+* what's the first thing that happens when the microcontroller powers up?
+* who takes the first instruction? whence?
+
