@@ -13,3 +13,6 @@ https://www.youtube.com/watch?v=LBs2ybCYu_E&list=PLpqp4pX4fQmnLXXL7sI4dtLocDOgJU
 more program oriented
 https://www.youtube.com/watch?v=VQAKkuLL31g&list=PLetF-YjXm-sCH6FrTz4AQhfH6INDQvQSn&index=1
 
+official AVR instruction page
+https://www.microchip.com/webdoc/avrassembler/avrassembler.wb_instruction_list.html
+
