@@ -3,5 +3,6 @@
 here I will illustrate the flow of events that happen during the execution. 
 I want to answer to questions such as:
   whats the first thing that happens? what's next?
+  who is in charge of selecting the first instruction? is that address a default value?
   
 I still have to figure that out myself.
