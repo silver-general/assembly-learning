@@ -7,6 +7,9 @@ I will try to post guides and thoughts that might be wrong, I will correct them 
 
 # guides
 
+guide by microchip
+https://www.youtube.com/watch?v=ZeY6BKqIZGk&list=PL9B4edd-p2agO7oNwuk47f5peA98Nueda
+
 generic stuff
 https://www.youtube.com/watch?v=LBs2ybCYu_E&list=PLpqp4pX4fQmnLXXL7sI4dtLocDOgJUWg0&index=26
 
