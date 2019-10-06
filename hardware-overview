@@ -1,1 +1,27 @@
 # hardware overview
+
+informations are transmitted via BUS, an (assume) 8-bit (0-255 possibilities) line that connects all the elements.
+
+REGISTER FILE
+
+ALU
+
+DATA MEMORY (sram)
+
+PROGRAM MEMORY 
+the place where instructions and data are loaded.
+FLASH, assume 16bit (2bytes) cells, assume 32kbyte total size
+
+INSTRUCTION REGISTER
+received instruction from program memory. assume 16 bits cells (as program memory cells)
+
+
+
+RECAP: WHAT HAPPENS WHEN YOU TURN ON THE MICROPROCESSOR
+---- how is the first command loaded??
+1. the intructions are in the *program memory*. they are selected by the *program counter* and sent to the *instruction register*
+2. instruction register sends instruction to *instruction decoder*
+3. instruction decoder decodes the instruction. there are 3 formats of instructions. see later.
+4. register files are used to store temporary data.
+
+...
