@@ -1,8 +1,9 @@
 # hardware overview
 see official schematics for details and pictures
-- - - - -
 
-ATtiny85
+_ _ _ _ _ _ _ _
+
+OFFICIAL DATASHEET: ATtiny85
 
 * RISC architecture, CMOS 8 bit
 
@@ -92,3 +93,104 @@ ATtiny85
 
 5.1 in-system re-programmable Flash program memory
 ...
+
+
+_ _ _ _ _ _ _ _ _ _
+_ _ _ _ _ _ _ _ _ _
+
+
+
+
+# ... WHAT HAPPENS ON EXECUTION
+
+1. when power to the chip rises, a reset sequence is triggered.
+   the program counter is set to address zero (the first in program memory on the flash). first instruction is here.
+   the program counter points to position 0 also when:
+   - external reset on reset pin is triggered (by setting it to...???)
+   - watchdog counter reaches its maximum value. the watchdog is reset from time to time by the software. if not, it resets the chip. how often?????
+       when the power supply rises, a reset sequence is triggered 
+   - you jump to the reset address (NOTE: not a real reset, register values are not set to defaults!) 
+   - you can specify another starting point with a directive before the code. useless now.
+
+   - the address 0 is also called the reset vector. the following addresses are interrupt vectors. you should read more at "handling interruptions" 
+
+2. an instruction is fetched to the INSTRUCTION REGISTER? and while executed, the program counter is incremented and the following instruction is fetched (2 level pipeline) 
+
+NOTE: program execution is linear, unless branches happen 
+
+
+
+
+# ... TIMING DURING EXECUTION 
+
+* one instruction is executed per clock cycle (exceptions: branching operations, SRAM read/write) 
+* 8MHz clock -> one clock cycle every 125ns  
+* to delay executions, use the most useless instruction: 
+    NOP ; no operation. wastes one clock cycle. use it in a loop 
+    
+    
+    
+# REGISTERS 
+
+* 8 bit storage spaces 
+
+* source and target for calculations, connected directly to cpu 
+
+* 32 in total, they have rules. see: register exceptions and stuff. 
+
+* POINTER REGISTERS: X,Y,Z : used to address with 16 bits the SRAM or (only Z) the program memory in the Flash memory. see: ONE NOTE NOTES
+
+
+
+
+# REGISTER OPERATIONS 
+
+* load a constant
+  LDI R16, 150 ; loads 150 into register R16 
+  - nota: can be done on registers R16-R31! use MOV to change R0-R15? 
+
+* copy a value between 2 registers
+  MOV R15, R16 ; copia R16 in R15 
+
+* CLR R15 ; mette tutto a 0 
+    note: can be done on ANY register! 
+* increment by one
+  INC R1 ; increments R1 by 1 
+  - note: in case of overflow, the result is 1 and the zero bit i  the status register is set to 1. the carry bit in the status register is NOT changed! 
+
+NOTE: several other comamnds are valid only for R16-R32: see datasheets 
+
+ 
+
+ 
+
+# DIRECTIVES 
+
+* tell the assembler stuff, like "I'll use this name instead of R12" 
+
+1. set new names for registers
+.DEF newname = R0 ; sets a new name for register R0 
+
+2. create macros for text to be replaced    
+
+.MACRO delay1 
+NOP; no operation 
+NOP 
+NOP 
+.ENDMACRO ; note: it is all written multiple times in program memory. to save space, use subroutines 
+
+3. subroutines: instructions grouped into "functions" 
+
+delay1: 
+NOP 
+NOP 
+RET 
+ ;and then call it as: 
+RCALL delay1 ; note: must set the stack pointer first, see instructions 
+
+
+
+# LABELS 
+
+* labels are the pointers to a chunk of code. how big can they be? 
+* defining a label: use the ":"->  "start:" 
