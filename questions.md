@@ -20,3 +20,10 @@ I still have to figure that out myself.
 * who takes the first instruction? whence? 
 -> program counter, default from first address on program memory (flash)
 
+
+* what are .nolist and .list directives??
+  -> they tell the assemblet not to list or list the result of the directives in the intermediate hex file!
+
+. what does .cseg do? instructs the assembler to produce code??
+
+
