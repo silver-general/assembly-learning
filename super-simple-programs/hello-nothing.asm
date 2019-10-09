@@ -2,4 +2,4 @@
 
 start:
   NOP
-  JMP start
+
