@@ -9,8 +9,14 @@ I still have to figure that out myself.
 
 
 * what is the most basic program one can write?
+
+
 * how is the program loaded into program memory (flash memory)? from address 0?
+-> yes, unless otherwisely specified 
 
 * what's the first thing that happens when the microcontroller powers up?
-* who takes the first instruction? whence? -> program counter, default from first address on program memory (flash)
+-> program counter goet to address 0 of program memory (flash)
+
+* who takes the first instruction? whence? 
+-> program counter, default from first address on program memory (flash)
 
