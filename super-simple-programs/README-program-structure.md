@@ -1,7 +1,7 @@
 # birth of a program
 
 1. write an *.asm program
-2. assembler translates it into machine code
+2. assembler translates it into machine code (or list file??????????????)
 3. something converts it into hexadecimal for AVR architecture? not sure ..............->>>>???
 
 # when the AVR microcontroller powers up
