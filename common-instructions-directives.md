@@ -1,4 +1,6 @@
 # instructions 
+see https://www.microchip.com/webdoc/avrassembler/avrassembler.wb_instruction_list.html
+
 
 ### RJUMP
 https://www.microchip.com/webdoc/avrassembler/avrassembler.wb_RJMP.html
