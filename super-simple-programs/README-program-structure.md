@@ -25,7 +25,7 @@ step-by-step tutorial: http://www.avr-asm-tutorial.net/avr_en/starter/starter.ht
 3. execution of second instruction, simultanaously fetching the third, et cetera
 **you can write this better**
 
-## smallest file asm
+## smallest file in asm
 ```
 .nolist
 .include "tn85def.inc" ; Define device ATtiny85
