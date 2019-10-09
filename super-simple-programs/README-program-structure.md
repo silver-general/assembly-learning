@@ -14,13 +14,14 @@ https://www.microchip.com/webdoc/avrassembler/avrassembler.wb_instruction_list.h
 
 ## birth of a program
 1. write an *.asm program
-2. assembler translates it into machine code (or list file??????????????)
+2. use the compiler (assembler) to translate it into machine code (or list file??????????????)
 3. something converts it into hexadecimal for AVR architecture? not sure ..............->>>>???
 **find a good explanation**
 
 ## events on power up
 1. reset event: program counter is set to address 0 (unless told otherwise) of program memory (Flash)
-2. fetch-execute of first instruction (remember: pipeline,2 levels), then second, etc
+2. fetch-execute of first instruction (remember: pipeline,2 levels)
+3. execution of second instruction, simultanaously fetching the third, et cetera
 **you can write this better**
 
 ## smallest file asm
@@ -39,7 +40,6 @@ NOP
 rjmp loop
             
 ```
-
 ## complete file in asm
 ```
 ;
@@ -53,18 +53,12 @@ rjmp loop
 .include "tn85def.inc"                        ; Define device ATtiny85
 .list
 ;
-
-
-
 ; **********************************
 ;        H A R D W A R E
 ; **********************************
 ;
 ; (F2 adds ASCII pin-out for device here)
 ;
-
-
-
 ; **********************************
 ;  P O R T S   A N D   P I N S
 ; **********************************
@@ -74,9 +68,6 @@ rjmp loop
 ;  or
 ;  .equ bMyPinO = PORTB0 ; Define an output pin)
 ;
-
-
-
 ; **********************************
 ;   A D J U S T A B L E   C O N S T
 ; **********************************
@@ -84,18 +75,12 @@ rjmp loop
 ; (Add all user adjustable constants here, e.g.)
 ; .equ clock=1000000 ; Define the clock frequency
 ;
-
-
-
 ; **********************************
 ;  F I X  &  D E R I V.  C O N S T
 ; **********************************
 ;
 ; (Add symbols for fixed and derived constants here)
 ;
-
-
-
 ; **********************************
 ;       R E G I S T E R S
 ; **********************************
@@ -106,9 +91,6 @@ rjmp loop
 ; free: R17 to R29
 ; used: R31:R30 = Z for ...
 ;
-
-
-
 ; **********************************
 ;           S R A M
 ; **********************************
@@ -119,18 +101,12 @@ rjmp loop
 ; sLabel1:
 ;   .byte 16 ; Reserve 16 bytes)
 ;
-
-
-
 ; **********************************
 ;         C O D E
 ; **********************************
 ;
 .cseg           ;tells the assembler that the following text is code segment
 .org 000000     ;sets start address of code segment
-
-
-
 ;
 ; **********************************
 ; R E S E T  &  I N T - V E C T O R S
@@ -150,9 +126,6 @@ rjmp loop
 	reti ; WDT
 	reti ; USI_START
 	reti ; USI_OVF
-
-
-
 ;
 ; **********************************
 ;  I N T - S E R V I C E   R O U T .
@@ -160,9 +133,6 @@ rjmp loop
 ;
 ; (Add all interrupt service routines here)
 ;
-
-
-
 ; **********************************
 ;  M A I N   P R O G R A M   I N I T
 ; **********************************
@@ -176,9 +146,6 @@ Main:
 	out SPL,rmp ; Init LSB stack pointer
 ; ...
 	sei ; Enable interrupts
-
-
-
 ;
 ; **********************************
 ;    P R O G R A M   L O O P
@@ -198,10 +165,6 @@ Loop:                                       ; main program loop
 ; .db "C(2)10 9ybG reahdrS hcimtd  " ; Machine code format
 ;                                                     
 ```
-
-
-
-
 ## complete file list 
 * (after assembling,contains info and expressione translated)
 * each instruction has: *address of cell, hexadecimal instruction (usually 16bit), original command mnemonics*
@@ -209,14 +172,12 @@ Loop:                                       ; main program loop
 ```
 gavrasm Gerd's AVR assembler version 4.3 (C)2019 by DG4FAC
 ----------------------------------------------------------
-
 Path:        /home/alberto/Desktop/EMG/assembly/av_sim/programs/
 Source file: 02_copy_add_loop.asm
 Hex file:    02_copy_add_loop.hex
 Eeprom file: 02_copy_add_loop.eep
 Compiled:    09.10.2019, 14:44:05
 Pass:        2
-
      1: ;
      2: ; ***********************************
      3: ; * (Add program task here)         *
@@ -341,7 +302,6 @@ Pass:        2
    124: ; .db "(C)2019 by Gerhard Schmidt  " ; Source code readable
    125: ; .db "C(2)10 9ybG reahdrS hcimtd  " ; Machine code format
    126: ;
-
 List of symbols:
 Type nDef nUsed             Decimalval           Hexval Name
   T     1     1                      38               26 ATTINY85
@@ -350,7 +310,7 @@ Type nDef nUsed             Decimalval           Hexval Name
   R     1     0                      15               0F RSREG
   R     1     4                      16               10 RMP
    No macros.
-
+   
 Program             :       25 words.
 Constants           :        0 words.
 Total program memory:       25 words.
