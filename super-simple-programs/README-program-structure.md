@@ -2,10 +2,10 @@
 # Table of Contents
 0. [references](#references)
 1. [birth of a program](#birth-of-a-program)
-2. [events on power up](#events-on-power-up])
-
-5. [complete file.asm](#complete-file.asm)
-6. [complete file.list](#complete-file.list)
+2. [events on power up](#events-on-power-up)
+3. [smallest file.asm](#smallest-file.asm)
+4. [complete file.asm](#complete-file.asm)
+5. [complete file.list](#complete-file.list)
 
 
 
@@ -23,7 +23,7 @@ https://www.microchip.com/webdoc/avrassembler/avrassembler.wb_instruction_list.h
 2. fetch-execute of first instruction (remember: pipeline,2 levels), then second, etc
 **you can write this better**
 
-## MOST BASIC FILE.ASM
+## smallest file.asm
 
 ```
 .nolist
