@@ -10,7 +10,8 @@
 
 
 ## references
-https://www.microchip.com/webdoc/avrassembler/avrassembler.wb_instruction_list.html
+official documentation: https://www.microchip.com/webdoc/avrassembler/avrassembler.wb_instruction_list.html
+step-by-step tutorial: http://www.avr-asm-tutorial.net/avr_en/starter/starter.html
 
 ## birth of a program
 1. write an *.asm program
