@@ -1,33 +1,27 @@
 
 # Table of Contents
-1. [Example](#example)
-1.1 [subexample]
-2. [Example2](#example2)
-3. [Third Example](#third-example)
-4. [Fourth Example](#fourth-examplehttpwwwfourthexamplecom)
+0. [references]
+1. [birth of a program]
+2. [events on powers up]
+3. [Third Example]
+4. [Fourth Example]
+i. [complete file.asm]
+j. [complete file.list]
+## references
+https://www.microchip.com/webdoc/avrassembler/avrassembler.wb_instruction_list.html
 
-
-## Example
-### subexample
-## Example2
-## Third Example
-## [Fourth Example](http://www.fourthexample.com) 
-
-# birth of a program
-
+## birth of a program
 1. write an *.asm program
 2. assembler translates it into machine code (or list file??????????????)
 3. something converts it into hexadecimal for AVR architecture? not sure ..............->>>>???
+**find a good explanation**
 
-# when the AVR microcontroller powers up
+## events on powers up
 1. reset event: program counter is set to address 0 (unless told otherwise) of program memory (Flash)
 2. fetch-execute of first instruction (remember: pipeline,2 levels), then second, etc
+**you can write this better**
 
-
-
-# To understand the code, look up things on https://www.microchip.com/webdoc/avrassembler/avrassembler.wb_instruction_list.html
-
-# MOST BASIC FILE.ASM
+## MOST BASIC FILE.ASM
 
 ```
 .nolist
@@ -44,7 +38,7 @@ rjmp loop
             
 ```
 
-# COMPLETE FILE.ASM
+## complete file.asm
 ```
 ;
 ; ***********************************
@@ -206,7 +200,8 @@ Loop:                                       ; main program loop
 
 
 
-# LIST FILE (after assembling,contains info and expressione translated)
+## complete file.list 
+* (after assembling,contains info and expressione translated)
 * each instruction has: *address of cell, hexadecimal instruction (usually 16bit), original command mnemonics*
 
 ```
