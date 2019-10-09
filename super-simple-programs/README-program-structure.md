@@ -26,7 +26,6 @@ step-by-step tutorial: http://www.avr-asm-tutorial.net/avr_en/starter/starter.ht
 **you can write this better**
 
 ## smallest file asm
-
 ```
 .nolist
 .include "tn85def.inc" ; Define device ATtiny85
@@ -95,9 +94,9 @@ rjmp loop
 ; **********************************
 ;           S R A M
 ; **********************************
-;
-.dseg
-.org SRAM_START
+;	
+.dseg					; tells the assembler that data segment will follow
+.org SRAM_START				; sets start of data segment (in SRAM, at the beginning) -> is SRAM_START a macro?
 ; (Add labels for SRAM locations here, e.g.
 ; sLabel1:
 ;   .byte 16 ; Reserve 16 bytes)
@@ -169,7 +168,6 @@ Loop:                                       ; main program loop
 ## complete file list 
 * (after assembling,contains info and expressione translated)
 * each instruction has: *address of cell, hexadecimal instruction (usually 16bit), original command mnemonics*
-
 ```
 gavrasm Gerd's AVR assembler version 4.3 (C)2019 by DG4FAC
 ----------------------------------------------------------
