@@ -1,7 +1,3 @@
-# directives
-* .ORG 0x0000 ; address. sets the reset vector?
-
-
 # instructions 
 
 ### RJUMP
@@ -15,15 +11,21 @@ EG:
 target:
   RJMP target
 
-# directives
+# directives 
+see https://www.microchip.com/webdoc/avrassembler/avrassembler.wb_directives.html#avrassembler.wb_directives.CSEG
 start with a "."
-### .org
+* .org
 .org 000000 ; sets the code to start at address 0 (where the reset vector is)
--> what are the parameters? what are the limitations?
+*The ORG directive sets the location counter to an absolute value. The value to set is given as a parameter. If an ORG directive is given within a Data Segment, then it is the SRAM location counter which is set, if the directive is given within a Code Segment, then it is the Program memory counter which is set and if the directive is given within an EEPROM Segment, it is the EEPROM location counter which is set.
+The default values of the Code and the EEPROM location counters are zero, and the default value of the SRAM location counter is the address immediately following the end of I/O address space (0x60 for devices without extended I/O, 0x100 or more for devices with extended I/O) when the assembling is started. Note that the SRAM and EEPROM location counters count bytes whereas the Program memory location counter counts words. Also note that some devices lack SRAM and/or EEPROM.*
 
-### to be defined:
-.dseg
-.cseg
+* .dseg
+start data segment
+*The DSEG directive defines the start of a Data segment. An assembler source file can consist of several data segments, which are concatenated into a single data segment when assembled. A data segment will normally only consist of BYTE directives (and labels). The Data Segments have their own location counter which is a byte counter. The ORG directive can be used to place the variables at specific locations in the SRAM. The directive does not take any parameters.*
+
+* .cseg
+start code segment.
+*The DSEG directive defines the start of a Data segment. An assembler source file can consist of several data segments, which are concatenated into a single data segment when assembled. A data segment will normally only consist of BYTE directives (and labels). The Data Segments have their own location counter which is a byte counter. The ORG directive can be used to place the variables at specific locations in the SRAM. The directive does not take any parameters.*
 
 
 
