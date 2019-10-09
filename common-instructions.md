@@ -1,3 +1,9 @@
+# directives
+* .ORG 0x0000 ; address. sets the reset vector?
+
+
+# instructions 
+
 ### RJUMP
 https://www.microchip.com/webdoc/avrassembler/avrassembler.wb_RJMP.html
 Relative jump to an address within PC - 2K +1 and PC + 2K (words)
