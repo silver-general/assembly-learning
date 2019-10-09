@@ -1,12 +1,14 @@
 
 # Table of Contents
-0. [references]
-1. [birth of a program]
-2. [events on powers up]
-3. [Third Example]
-4. [Fourth Example]
-5. [complete file.asm]
-6. [complete file.list]
+0. [references](#references)
+1. [birth of a program](#birth-of-a-program)
+2. [events on power up](#events-on-power-up])
+
+5. [complete file.asm](#complete-file.asm)
+6. [complete file.list](#complete-file.list)
+
+
+
 ## references
 https://www.microchip.com/webdoc/avrassembler/avrassembler.wb_instruction_list.html
 
@@ -16,7 +18,7 @@ https://www.microchip.com/webdoc/avrassembler/avrassembler.wb_instruction_list.h
 3. something converts it into hexadecimal for AVR architecture? not sure ..............->>>>???
 **find a good explanation**
 
-## events on powers up
+## events on power up
 1. reset event: program counter is set to address 0 (unless told otherwise) of program memory (Flash)
 2. fetch-execute of first instruction (remember: pipeline,2 levels), then second, etc
 **you can write this better**
