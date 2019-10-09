@@ -5,8 +5,8 @@
 2. [events on powers up]
 3. [Third Example]
 4. [Fourth Example]
-8. [complete file.asm]
-9. [complete file.list]
+5. [complete file.asm]
+6. [complete file.list]
 ## references
 https://www.microchip.com/webdoc/avrassembler/avrassembler.wb_instruction_list.html
 
