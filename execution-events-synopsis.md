@@ -15,8 +15,9 @@ I still have to figure that out myself.
 -> yes, unless otherwisely specified 
 
 * what's the first thing that happens when the microcontroller powers up?
--> program counter goet to address 0 of program memory (flash)
+-> program is loaded from FLASH to SRAM (faster reading)
+-> program counter goet to address 0 of program memory (SRAM)     -------------------> correct?
 
 * who takes the first instruction? whence? 
--> program counter, default from first address on program memory (flash)
+-> program counter, default from first address on program memory (SRAM)
 
