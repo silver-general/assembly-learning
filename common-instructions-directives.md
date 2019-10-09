@@ -16,6 +16,10 @@ EG:
 target:
   RJMP target
 
+### SBR- Set Bits in Register 
+ORI OR, immediate between 2 operators.
+
+
 # directives 
 see https://www.microchip.com/webdoc/avrassembler/avrassembler.wb_directives.html#avrassembler.wb_directives.CSEG
 start with a "."
