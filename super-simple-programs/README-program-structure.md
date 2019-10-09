@@ -6,4 +6,7 @@
 
 # when the AVR microcontroller powers up
 1. reset event: program counter is set to address 0 (unless told otherwise) of program memory (Flash)
-2. 
+2. fetch-execute of first instruction (remember: pipeline,2 levels), then second, etc
+
+
+
