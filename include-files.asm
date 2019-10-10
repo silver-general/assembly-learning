@@ -339,7 +339,7 @@
 .equ	OCIE0A	= 4	; Timer/Counter0 Output Compare Match A Interrupt Enable
 
 ; TIFR - Timer/Counter0 Interrupt Flag register
-.equ	TOV0	= 1	; Timer/Counter0 Overflow Flag
+.equ	TOV0	= 1	; Timer/Counter0 Overflow Flag            -> set it when the TCNT0 overflows! --> how do you set it? 
 .equ	OCF0B	= 3	; Timer/Counter0 Output Compare Flag 0B
 .equ	OCF0A	= 4	; Timer/Counter0 Output Compare Flag 0A
 
