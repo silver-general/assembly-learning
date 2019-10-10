@@ -68,7 +68,7 @@
 .equ	SPMCSR	= 0x37
 .equ	MCUCR	= 0x35      ; MCU Control Register -> control bits for power management. see documentation 7.5.1
 .equ	MCUSR	= 0x34    
-.equ	TCCR0B	= 0x33
+.equ	TCCR0B	= 0x33    ; timer counter control register B
 .equ	TCNT0	= 0x32      ; timer counter register that stores the count. 8 bit -> counts 0-255 !
 .equ	OSCCAL	= 0x31
 .equ	TCCR1	= 0x30
@@ -77,7 +77,7 @@
 .equ	OCR1C	= 0x2d
 .equ	GTCCR	= 0x2c
 .equ	OCR1B	= 0x2b
-.equ	TCCR0A	= 0x2a
+.equ	TCCR0A	= 0x2a     ; timer counter control register A
 .equ	OCR0A	= 0x29
 .equ	OCR0B	= 0x28
 .equ	PLLCSR	= 0x27
@@ -344,15 +344,15 @@
 .equ	OCF0A	= 4	; Timer/Counter0 Output Compare Flag 0A
 
 ; TCCR0A - Timer/Counter  Control Register A
-.equ	WGM00	= 0	; Waveform Generation Mode
-.equ	WGM01	= 1	; Waveform Generation Mode
+.equ	WGM00	= 0	; Waveform Generation Mode          default: normal counter 0,0 below
+.equ	WGM01	= 1	; Waveform Generation Mode 
 .equ	COM0B0	= 4	; Compare Output Mode, Fast PWm
 .equ	COM0B1	= 5	; Compare Output Mode, Fast PWm
 .equ	COM0A0	= 6	; Compare Output Mode, Phase Correct PWM Mode
 .equ	COM0A1	= 7	; Compare Output Mode, Phase Correct PWM Mode
 
 ; TCCR0B - Timer/Counter Control Register B
-.equ	CS00	= 0	; Clock Select
+.equ	CS00	= 0	; Clock Select                      default: no timer=000; clk=001; clk/1024=101
 .equ	CS01	= 1	; Clock Select
 .equ	CS02	= 2	; Clock Select
 .equ	WGM02	= 3	; 
