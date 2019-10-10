@@ -1,4 +1,5 @@
 short intro at https://exploreembedded.com/wiki/AVR_Timer_programming
+
 good explanation at http://www.avr-asm-tutorial.net/avr_en/starter/starter.html
 # intro
 
@@ -60,4 +61,5 @@ ldi R16, (1<<CS00)|(1<<CS02)     ; 00000101 -> clk/1024 mode
 out TCCR0B, R16                  ; sets the bits in the control register
 ```
 
-###
+#### when the timer overflows
+
