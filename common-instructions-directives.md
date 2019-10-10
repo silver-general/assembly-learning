@@ -1,3 +1,8 @@
+
+# misc
+* *$*, or *0x*   is used to indicate hexadecimal values. same as 0x!
+* ...
+
 # expressions
 https://www.microchip.com/webdoc/avrassembler/avrassembler.wb_expressions.html
 
@@ -23,6 +28,10 @@ ORI OR, immediate between 2 operators.
 # directives 
 see https://www.microchip.com/webdoc/avrassembler/avrassembler.wb_directives.html#avrassembler.wb_directives.CSEG
 start with a "."
+
+* .ecu *name* *constant*
+equicalent to #def in C. assigns a constant to a name. it can't be modified!
+
 * .org
 .org 000000 ; sets the code to start at address 0 (where the reset vector is)
 *The ORG directive sets the location counter to an absolute value. The value to set is given as a parameter. If an ORG directive is given within a Data Segment, then it is the SRAM location counter which is set, if the directive is given within a Code Segment, then it is the Program memory counter which is set and if the directive is given within an EEPROM Segment, it is the EEPROM location counter which is set.
