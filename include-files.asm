@@ -66,10 +66,10 @@
 .equ	TIMSK	= 0x39
 .equ	TIFR	= 0x38
 .equ	SPMCSR	= 0x37
-.equ	MCUCR	= 0x35     ; MCU Control Register -> control bits for power management
+.equ	MCUCR	= 0x35      ; MCU Control Register -> control bits for power management. see documentation 7.5.1
 .equ	MCUSR	= 0x34    
 .equ	TCCR0B	= 0x33
-.equ	TCNT0	= 0x32
+.equ	TCNT0	= 0x32      ; timer counter register that stores the count. 8 bit -> counts 0-255 !
 .equ	OSCCAL	= 0x31
 .equ	TCCR1	= 0x30
 .equ	TCNT1	= 0x2f
