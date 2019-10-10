@@ -21,7 +21,7 @@ timer/counter is an independent unit inside the MCU. it's used for:
 ## basics
 * 8 bit -> can count 0-255
 * the register that stores the count is TCNT0 (see the include.files for it's definition)
-* if TCNT0 overflows, a TimerOverflowFlag (TOV) is set -> HOW??????????????????????????????????????????????????????
+* if TCNT0 overflows, a TimerOverflowFlag (TOV) is set -> a timer overflow INTERRUPT happens!
 * if you put a value into the Output Compare Register (OCR0), whenever the counter reaches it, it sets the Output Compare Flag (OCF0)
 
 given the timer/counter control register 0 (TCCR0):
@@ -62,4 +62,19 @@ out TCCR0B, R16                  ; sets the bits in the control register
 ```
 
 #### when the timer overflows
+* TIFR, timer/counter interrupt flag register sets the bit1, TOV0, to 1. 
+ * it is then restored to 0 during the interrupt sequence, or by software.
+* in order to have an interrupt, you must first enable the timer counter overflow interrupt enabler, see 11.9.9
+ * in TIMSK register, set bit1 (TOIE0) to 1
+  * ldi R16, 1<<TOIE0 \n out TIMSK,R16 ????????????????????????????? 
 
+* when an interrupt condition occurs, the CPU does the following:
+1. switches off further interrupts by clearing the I-bit (7th bit, global interrupt enabler) in the status register 
+2. saves the current execution address counter on a stack (SRAM) to be resumed later
+3. tells the program counter the next address, so it jumps to the location specific for that interrupt
+4. at that location another jump to a subroutine
+5. RETI instruction is executed
+ * retrieves the previous execution address and gives it to the program counter
+ * set to 1 the global interrupt enabler I-bit (7th bit) in the status register
+ 
+CONTINUES AT: TIMER INTERRUPTS http://www.avr-asm-tutorial.net/avr_en/starter/starter.html
