@@ -1,7 +1,7 @@
 ## power saving modes
 https://microchipdeveloper.com/8avr:avrsleep
 
-1. Idle Mode
+1. Idle Mode (bit 4 and 3 of MCUCR: 0,0 -> see documentation)
 2. Power Down
 3. Power Save
 4. Standby
@@ -32,14 +32,15 @@ mov r0,r11
 ; Enable sleep mode: load immediately r16 (a general purpose register) with 1 shifted by 5 (SE: sleep enable, bit 5 of MCUCR, control register!)
 ldi r16,(1<<SE)   
 
-; OUT - Store Register to I/O Location -> stores R16 (contains 00010000) into MCUCR (to set bit 5, sleep enable, to 1)
+; OUT - Store Register to I/O Location -> stores R16 (contains 00010000) into MCUCR
+; this is done to set bit 5, sleep enable, to 1 AND bit 4 and 3 to 0,0 (see documentation: 7.5.1)
 out MCUCR, r16        
 
 sleep ; Put MCU in sleep mode
 ```
 
 # QUESTIONS
-1. why in the example
+1. why in the example does he copy r0 into r11?
 
 ; Copy r11 to r0
 mov r0,r11 
