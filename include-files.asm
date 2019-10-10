@@ -344,16 +344,16 @@
 .equ	OCF0A	= 4	; Timer/Counter0 Output Compare Flag 0A
 
 ; TCCR0A - Timer/Counter  Control Register A
-.equ	WGM00	= 0	; Waveform Generation Mode          default: normal counter 0,0 below
+.equ	WGM00	= 0	; Waveform Generation Mode          default: normal counter 0,0 nei bit 1:0 !
 .equ	WGM01	= 1	; Waveform Generation Mode 
 .equ	COM0B0	= 4	; Compare Output Mode, Fast PWm
 .equ	COM0B1	= 5	; Compare Output Mode, Fast PWm
 .equ	COM0A0	= 6	; Compare Output Mode, Phase Correct PWM Mode
 .equ	COM0A1	= 7	; Compare Output Mode, Phase Correct PWM Mode
 
-; TCCR0B - Timer/Counter Control Register B
+; TCCR0B - Timer/Counter Control Register B       
 .equ	CS00	= 0	; Clock Select                      default: no timer=000; clk=001; clk/1024=101
-.equ	CS01	= 1	; Clock Select
+.equ	CS01	= 1	; Clock Select              ;NOTA sono tutti valori costanti, servono a: quando devi settare il bit 2 (il terzo) del registro di controllo, carichi (1<<CS02)
 .equ	CS02	= 2	; Clock Select
 .equ	WGM02	= 3	; 
 .equ	FOC0B	= 6	; Force Output Compare B
