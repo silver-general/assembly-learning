@@ -1,5 +1,5 @@
 short intro at https://exploreembedded.com/wiki/AVR_Timer_programming
-
+good explanation at http://www.avr-asm-tutorial.net/avr_en/starter/starter.html
 # intro
 
 timer/counter is an independent unit inside the MCU. it's used for:
@@ -40,6 +40,24 @@ the bits are: D7,D6,D,D4,D3,D2,D1,D0
 * whenever it overflows a TimerOverflowFlag (TOV) is set -> HOW?????????????????
 
 
-## let's set a timer, normal mode, at clk/1024
+#### let's set a timer, normal mode, at clk/1024
 * normal mode: set bits 1,0 of TCCR0A to 0,0 -> it's the default, no action required.
-* activate timer at clk/1024: set bits 2,1,0 of TCCR0B to 1,0,1 -> what command??????????????????????????????????????????
+* activate timer at clk/1024: set bits 2,1,0 of TCCR0B to 1,0,1 -> what command? see below
+ * to get the inactive timer: set bit 2:1:0 of TCCR0B to 0:0:0 -> clr R16 \n out TCCR0B,R16 ; loads all zeroes 
+ * to get the clock speed: set bit 2:1:0 of TCCR0B to 0:0:1 -> ldi R16, 1<<CS00 ;(CS00 is 0) \n out TCCR0B,R16 ; sets first bit to 1
+ * to get clk/1024:  set bit 2:1:0 of TCCR0B to 1:0:1 -> ldi
+ 
+```
+; TIMER MODE: see "TCCR0A - Timer/Counter  Control Register A"
+; default is "normal" -> 0:0 in bites 1:0 -> no operation needed for a simple timer!
+
+; TIMER SPEED: see "TCCR0B - Timer/Counter Control Register B" in the include file to use CS00,CS01,...
+; CHOOSE 1, COMMENT THE OTHERS:
+clr R16                          ; 00000000 -> no timer
+ldi R16, 1<<CS00                 ; 00000001 -> clk mode
+ldi R16, (1<<CS00)|(1<<CS02)     ; 00000101 -> clk/1024 mode
+
+out TCCR0B, R16                  ; sets the bits in the control register
+```
+
+###
