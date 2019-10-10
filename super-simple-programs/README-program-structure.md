@@ -26,6 +26,9 @@ step-by-step tutorial: http://www.avr-asm-tutorial.net/avr_en/starter/starter.ht
 **you can write this better**
 
 ## smallest file in asm
+* initial directives:
+	* "tn85def.inc" is the file where all registers are named for better use.
+	
 ```
 .nolist
 .include "tn85def.inc" ; Define device ATtiny85
