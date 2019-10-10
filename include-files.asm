@@ -334,7 +334,7 @@
 
 ; ***** TIMER_COUNTER_0 **************
 ; TIMSK - Timer/Counter Interrupt Mask Register
-.equ	TOIE0	= 1	; Timer/Counter0 Overflow Interrupt Enable
+.equ	TOIE0	= 1	; Timer/Counter0 Overflow Interrupt Enable                            -> set to 1 to enable timer overflow interrupts!
 .equ	OCIE0B	= 3	; Timer/Counter0 Output Compare Match B Interrupt Enable
 .equ	OCIE0A	= 4	; Timer/Counter0 Output Compare Match A Interrupt Enable
 
@@ -450,8 +450,8 @@
 .equ	OCIE1B	= 5	; OCIE1A: Timer/Counter1 Output Compare B Interrupt Enable
 .equ	OCIE1A	= 6	; OCIE1A: Timer/Counter1 Output Compare Interrupt Enable
 
-; TIFR - Timer/Counter Interrupt Flag Register
-.equ	TOV1	= 2	; Timer/Counter1 Overflow Flag
+; TIFR - Timer/Counter Interrupt Flag Register                                  
+.equ	TOV1	= 2	; Timer/Counter1 Overflow Flag                     ; THIS IS SET WHENEVER THE COUNTER OVERFLOWS!
 .equ	OCF1B	= 5	; Timer/Counter1 Output Compare Flag 1B
 .equ	OCF1A	= 6	; Timer/Counter1 Output Compare Flag 1A
 
