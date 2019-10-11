@@ -1,4 +1,7 @@
-1. [to do](#to-do)
+1. [continua](#continua)
+
+# references
+* date and time http://www.avr-asm-tutorial.net/avr_en/apps/dcf77_m16/datetime/datetime.html
 
 ## questions
 1. do I need the global interrupt enabler?
@@ -54,12 +57,25 @@ Let's say I can tick every 1.024ms=1024ns -> 976.5625 tick/s
 2. I take 977.000 ticks/s (error of 0.0004%) -> no need, because in an hour there are no decimals already!
 
 every tick is an overflow, therefore I need to increment a value in a register (or 2). 
-1. 12h -> 42187608 ticks -> store it in 19.68... = 20 bit 
-2. 24h -> 84375216 ticks -> ... = 20.68... = 21 bit
+1. 12h -> 42187608 ticks -> store it in 18.68... = 20 bit  -------------------------------> **revise calculations!**
+2. 24h -> 84375216 ticks -> ... = 19.68... = 21 bit
 3: therefore, 24 bits are required -> 3 bytes! **I need 3 registers**
 
-## to do:
-how do I store a number in multiple registers? -> let's find out, but later.					
+**good practice:** set some registers to a value and decrease it. when it reaches 0, use the Z flag to find the end!
+
+### example: store 4394 into R25:R24 8bit register pair
+1. in "MAIN INIT" section: set the number in R25:R24 using LOW(4394) and high(4394)
+```
+LDI R25,high(4394)
+LDI R24,low(4394)
+```
+2. in the "INT - SERVICE ROUT." section, in the Ovf0Isr (timer overflow interrupt subroutine) section:  
+**???***
+
+## in practice: I need to store 84375216 in 3 bytes
+## continua
+
+
 
 # SETTING SLEEP
 sleep mode is controlled by MCUCR: microcontroller unit control register. contains power management bits
