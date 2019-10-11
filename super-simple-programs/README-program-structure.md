@@ -98,8 +98,8 @@ rjmp loop
 ;           S R A M
 ; **********************************
 ;	
-.dseg					; tells the assembler that data segment will follow
-.org SRAM_START				; sets start of data segment (in SRAM, at the beginning) -> is SRAM_START a macro?
+.dseg						; tells the assembler that data segment will follow
+.org SRAM_START					; sets start of data segment (in SRAM, at the beginning, defined as 							  SRAM_START in the include file!)
 ; (Add labels for SRAM locations here, e.g.
 ; sLabel1:
 ;   .byte 16 ; Reserve 16 bytes)
@@ -108,13 +108,13 @@ rjmp loop
 ;         C O D E
 ; **********************************
 ;
-.cseg           ;tells the assembler that the following text is code segment
+.cseg           ;tells the assembler that the following text is code segment (to be written in flash ROM)
 .org 000000     ;sets start address of code segment
 ;
 ; **********************************
 ; R E S E T  &  I N T - V E C T O R S
 ; **********************************
-	rjmp Main ; Reset vector
+	rjmp Main ; Reset vector		; first part of program memory are interrupt vectors
 	reti ; INT0
 	reti ; PCI0
 	reti ; OC1A
@@ -148,13 +148,13 @@ Main:
 	ldi rmp,Low(RAMEND)
 	out SPL,rmp ; Init LSB stack pointer
 ; ...
-	sei ; Enable interrupts
+	sei ; Enable interrupts						; enabling global interrupts!
 ;
 ; **********************************
 ;    P R O G R A M   L O O P
 ; **********************************
 ;
-Loop:                                       ; main program loop
+Loop:                                       ; main program loop. does some stuff
 	INC R1		; increments R1
 	INC R2		; same for R"
 	MOV R3,R1	; copies R1 into R3
