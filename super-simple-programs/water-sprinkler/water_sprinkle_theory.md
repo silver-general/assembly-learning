@@ -1,4 +1,4 @@
-1. [to do](to-do)
+1. [to do](#to-do)
 
 ## questions
 1. do I need the global interrupt enabler?
