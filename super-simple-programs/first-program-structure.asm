@@ -1,5 +1,6 @@
-.nolist ; does not list the following inclusions in the list file 
-.include "tn85def.inc" ; Define device ATtiny85 keywords
+.nolist 		; does not list the following inclusions (the include file) in the list file, cos' it's long
+.include "tn85def.inc" 	; Define device ATtiny85 keywords
+			; many memory address have names to be used more easily
 .list
 
 .cseg         ; code segment: tells the assembler to write the following in the Program Memory (flash ROM)
