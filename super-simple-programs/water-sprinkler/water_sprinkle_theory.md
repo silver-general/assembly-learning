@@ -5,8 +5,7 @@ do I need the global interrupt enabler?
 using the ATtiny85 8-bit timer/counter0. see official documentation, chapter 11 
 
 ## enabling global interrupts
-in the default template in AVR-sim is already set.
-  WHERE: "MAIN PROGRAM INIT" section
+in the default template in AVR-sim is already set.  WHERE: "MAIN PROGRAM INIT" section
 
 ## selection of timer mode, overflow flag, speed.
 WHERE: put this in the main block, but outside the program loop! but if it goes to sleep, maybe it's also ok in the loop.
