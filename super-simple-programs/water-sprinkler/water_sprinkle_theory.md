@@ -90,7 +90,8 @@ minuteDoneEnding:                 	; this label is useless! but I added it for s
 	rjmp Ovf0Isr_end       
 	
 ```
-
+# continua
+controlla su tablet le annotazioni su samsung notes, fà partire il simulatore e mandalo a dormire (sennò il loop brucia 2 ns!
 
 # SETTING SLEEP
 sleep mode is controlled by MCUCR: microcontroller unit control register. contains power management bits
