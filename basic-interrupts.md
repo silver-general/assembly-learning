@@ -13,6 +13,7 @@ events neeeds to be handled by the MCU.
   * EG ``` .equ	MCUCR	= 0x35     ; MCU Control Register -> control bits for power management ```
 
 # theory
+* **use SEI to set global interrupt enabler in the I-bit (7th bit) in the control register!** 
 * interrupts are handled by *interrupt vectors*. those are pointers to certain code memory cells that are referenced when a certain interrupt happens.
 * the block of cells of program memory (in the flash ROM, starting at 0x0000) is the *program memory vector table*, dedicated to the reset vector and several interrupt vectors.
 * **note**: in the default template of a sim-avr .asm file you can see those vectors defined (.org directive) by default.
