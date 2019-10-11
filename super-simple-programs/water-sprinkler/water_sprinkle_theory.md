@@ -71,9 +71,9 @@ LDI R24,low(4394)
 ```
 2. in the "INT - SERVICE ROUT." section, in the Ovf0Isr (timer overflow interrupt subroutine) section:  
 **???***
-
-## in practice: I need to store 84375216 in 3 bytes
 ## continua
+in practice: I need to store 84375216 in 3 bytes. HOW??
+
 
 
 
