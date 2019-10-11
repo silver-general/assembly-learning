@@ -89,8 +89,8 @@ rjmp loop
 ; **********************************
 ;
 ; free: R0 to R14
-.def rSreg = R15 			; Save/Restore status port
-.def rmp = R16 				; Define multipurpose register RMP!!!
+.def rSreg = R15 			; defines R15 as register to store status register during interrupts
+.def rmp = R16 				; Define multipurpose register rmp! 
 ; free: R17 to R29
 ; used: R31:R30 = Z for ...
 ;
@@ -114,12 +114,12 @@ rjmp loop
 ; **********************************
 ; R E S E T  &  I N T - V E C T O R S
 ; **********************************
-	rjmp Main ; Reset vector		; first part of program memory are interrupt vectors
+	rjmp Main ; Reset vector	; first part of program memory are interrupt vectors. def: RETI (exit immediately)
 	reti ; INT0
 	reti ; PCI0
 	reti ; OC1A
 	reti ; OVF1
-	reti ; OVF0
+	reti ; OVF0 			; overflow of timer0. set an rjump to it's subroutine below (int service rout) 
 	reti ; ERDY
 	reti ; ACI
 	reti ; ADCC
@@ -131,10 +131,10 @@ rjmp loop
 	reti ; USI_OVF
 ;
 ; **********************************
-;  I N T - S E R V I C E   R O U T .
+;  I N T - S E R V I C E   R O U T .		
 ; **********************************
 ;
-; (Add all interrupt service routines here)
+; put subroutines here
 ;
 ; **********************************
 ;  M A I N   P R O G R A M   I N I T
