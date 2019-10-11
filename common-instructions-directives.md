@@ -11,6 +11,17 @@ some registers are general purpose, others are input/output (of those, some are 
 # expressions
 https://www.microchip.com/webdoc/avrassembler/avrassembler.wb_expressions.html
 
+# IF STATEMENTS
+"If a value is equal to a constand, do this"
+```
+CPI R18,0 ; compares and stores either 0 or 1 into the boolean register (WHERE???)
+BREQ else ; jump conditionally to the else block, somewhere in the near
+
+; ... other code, the THEN block
+
+else: 
+  ;this is the code you jump to
+```
 
 # instructions 
 see https://www.microchip.com/webdoc/avrassembler/avrassembler.wb_instruction_list.html
