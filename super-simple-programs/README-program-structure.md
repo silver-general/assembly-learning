@@ -89,8 +89,8 @@ rjmp loop
 ; **********************************
 ;
 ; free: R0 to R14
-.def rSreg = R15 ; Save/Restore status port
-.def rmp = R16 ; Define multipurpose register
+.def rSreg = R15 			; Save/Restore status port
+.def rmp = R16 				; Define multipurpose register RMP!!!
 ; free: R17 to R29
 ; used: R31:R30 = Z for ...
 ;
@@ -145,8 +145,8 @@ Main:
   ldi rmp,High(RAMEND)
   out SPH,rmp ; Init MSB stack pointer
   .endif
-	ldi rmp,Low(RAMEND)
-	out SPL,rmp ; Init LSB stack pointer
+	ldi rmp,Low(RAMEND)				; rmp:R16 multi purpose register. it gives it RAMEND address
+	out SPL,rmp ; Init LSB stack pointer		; stack pointer low has the address of the end of ram!! 
 ; ...
 	sei ; Enable interrupts						; enabling global interrupts!
 ;
