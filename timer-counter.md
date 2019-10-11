@@ -61,20 +61,50 @@ ldi R16, (1<<CS00)|(1<<CS02)     ; 00000101 -> clk/1024 mode
 out TCCR0B, R16                  ; sets the bits in the control register
 ```
 
-#### when the timer overflows
+## when the timer overflows
 * TIFR, timer/counter interrupt flag register sets the bit1, TOV0, to 1. 
  * it is then restored to 0 during the interrupt sequence, or by software.
 * in order to have an interrupt, you must first enable the timer counter overflow interrupt enabler, see 11.9.9
  * in TIMSK register, set bit1 (TOIE0) to 1
-  * ldi R16, 1<<TOIE0 \n out TIMSK,R16 ????????????????????????????? 
 
 * when an interrupt condition occurs, the CPU does the following:
 1. switches off further interrupts by clearing the I-bit (7th bit, global interrupt enabler) in the status register 
-2. saves the current execution address counter on a stack (SRAM) to be resumed later
+2. saves the current execution address counter on a **stack** (SRAM) to be resumed later
 3. tells the program counter the next address, so it jumps to the location specific for that interrupt
 4. at that location another jump to a subroutine
 5. RETI instruction is executed
- * retrieves the previous execution address and gives it to the program counter
- * set to 1 the global interrupt enabler I-bit (7th bit) in the status register
- 
-CONTINUES AT: TIMER INTERRUPTS http://www.avr-asm-tutorial.net/avr_en/starter/starter.html
+5.1 retrieves the previous execution address and gives it to the program counter
+5.2 set to 1 the global interrupt enabler I-bit (7th bit) in the status register
+
+## what's a STACK? -> see documentation par 4.6
+a stack is a chunk of memory in the SRAM. see **"data memory declaration" in the include file!**
+* at initialization **(main program init)** we must declare that at the end of SRAM storage a port register named Stack Pointer (SP) points there.
+* if the device has less than 256-96=160 bytes of SRAM, the StackPointer is a single point register SPL (stack point low bytes)
+* if it has more, there is also the high bits of the stack pointer in another register, SPH
+
+#### initialize a stack
+```
+  ldi R16,HIGH(RAMEND) ; Load the MSB of the last SRAM address to R16 ; only if device has more than 256-96=160 SRAM bytes!
+  out SPH,R16 ; and write it to the MSB of the stackpointer high          ; only if device has more than 256-96=160 SRAM bytes!
+  ldi R16,LOW(RAMEND) ; Load the last SRAM address to R16     
+  out SPL,R16 ; and write it to the LSB of the stackpointer low  
+  
+; once you write an address to SPH,SPL, the stackpointer points there!
+```
+
+
+#### stack operations
+1. push a value on top of the stack (decreases the stack pointer address)
+```
+  ldi R16,'A'                         ; loads immediately ASCII character A to R16
+  push R16 ;                          ; decreases stack pointer address, adds a value there (on top of stack)
+  pop R0 ;                            ; moves current stack entry intro the register specified, increments StackPointer
+```
+
+
+# QUESTIONS: 
+1. why stack pointer can't address position higher than 0x60?
+2. in the program template it only loads stack pointer low, but the ATtiny has 512bytes of SRAM, so it needs the high bits! why is that?
+3. where in the guide should I put the stack operation part?
+4. how big is the stack? as big as the remaining SRAM? 
+5. push and pop seem not to send data to the stack. what?????????????????????????????????????????????
