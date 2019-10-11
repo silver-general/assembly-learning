@@ -58,7 +58,7 @@ every tick is an overflow, therefore I need to increment a value in a register (
 2. 24h -> 84375216 ticks -> ... = 20.68... = 21 bit
 3: therefore, 24 bits are required -> 3 bytes! **I need 3 registers**
 
-#### to do:
+## to do:
 how do I store a number in multiple registers? -> let's find out, but later.					
 
 # SETTING SLEEP
