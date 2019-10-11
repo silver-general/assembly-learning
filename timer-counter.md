@@ -205,9 +205,8 @@ Ovf0Isr:				           ; subroutine in case of timer0 overflow
 
 # SECTION 2: DATE AND TIME
 how many second is a tick of timer, if I tick every 1024 clock cycles?
-* if I get 1M ticks/second, I have 1ns/tick. 1024 ticks last 1024ns=1.024ms. to count to a second, I need 976.5625 ticks 
+* if I get 1M clock/second, I have 1ns/clock. 1024 clocks are a tick, so a tick lasts 1024ns=1.024ms. to count to a second, I need 976.5625 ticks. let's increment a register each time the counter register gets to 0 (it overflows) 
 
-let's use 3 bytes as consecutive registers R14,R13,R12.
 
 # continua
 
