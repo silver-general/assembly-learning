@@ -6,7 +6,7 @@
 ## questions
 1. do I need the global interrupt enabler?
 2. how do I implement sleep as a subroutine (to call it as a function)?
-
+3. come mai se jumpo dal loop all'interrupt poi mi dice che lo stack pointer è fuori range? non si fa, vero?
 # SETTING A TIMER
 using the ATtiny85 8-bit timer/counter0. see official documentation, chapter 11 
 
@@ -50,31 +50,46 @@ Ovf0Isr:
 	out SREG,rSreg			; restore status register from temporary register
 	RETI				; return from interrupt subroutine
 ```
+
+## how to count minutes
+
 Once you are in the timer0 overflow subroutine, you must sign somewhere that about 1024ns + the nanoseconds prior the timer settings ( that you can ignore because it's very little time) have passed -> use a couple of register depending on how much info you need.
 
-Let's say I can tick every 1.024ms=1024ns -> 976.5625 tick/s 
-1. I take 976.565 tick/s -> 58593.9 ticks/min -> 3515634 ticks/h -> no need to go beyond. I need 12/24 hours.
-2. I take 977.000 ticks/s (error of 0.0004%) -> no need, because in an hour there are no decimals already!
+#### note sulla velocità di tick
+* 1tick/clk: 1 tick takes 1ns -> 1 interrupt takes 256 ticks, that is 256ns -> 3906.25 interrupts/s
+* 1tick/(1024clk): 1 tick takes 1024ns->1 interrupt takes 256x1024ns=262144ns->3.8169 interrupts/s->**228.88interrupts/s**
 
-every tick is an overflow, therefore I need to increment a value in a register (or 2). 
-1. 12h -> 42187608 ticks -> store it in 18.68... = 20 bit  -------------------------------> **revise calculations!**
-2. 24h -> 84375216 ticks -> ... = 19.68... = 21 bit
-3: therefore, 24 bits are required -> 3 bytes! **I need 3 registers**
+1. when the clock ticks, the timer counter increments. when it reaches 256, a timer overflow interrupt happens. when it happens, I can say that 1024x256 ticks have occurred -> 1.024ms x 256 = 262144ns-> 1 TIMER OVERFLOW EVERY 262144ns!
+2. per ogni timer overflow interrupt (quindi per ogni 262144ns) incremento un valore in un registro, diciamo R17. R17 tiene fino al numero 255 valori, quindi aumento R17 finchè non overflowa (diventa = 0). SE R17 diventa 0, ho fatto 256x256 interruzioni -> tantissime.
+3. OPPURE: ho un interrupt ogni 262144ns -> ho un secondo ogni 3.8147 interrupts -> **un minuto ogni 228.88 interrupts** (che stanno in 1byte!)
 
-**good practice:** set some registers to a value and decrease it. when it reaches 0, use the Z flag to find the end!
+## caso: conta fino a 24h
+facciamolo: ogni interrupt (ovvero: dopo 262.144ms) incremento il registro degli interrupts (InterrNum) e quando arriva a 229 (errore dello 0.0001! sotto il millesimo di secondo!) aumento il registro dei minuti (minuti) e quando arriva a ORETOTALI ho finito! con ORETOTALI: scegli. per adesso, facciamo 24.
 
-### example: store 4394 into R25:R24 8bit register pair
-1. in "MAIN INIT" section: set the number in R25:R24 using LOW(4394) and high(4394)
 ```
-LDI R25,high(4394)
-LDI R24,low(4394)
+; REGISTRI IN USO
+; rSreg(R15): status register address
+; InterrNum(R17): interrupts number
+; hours(R19): hour number
+
+Ovf0Isr:
+	in rSreg, SREG			; save status register SREG into temporary register rSreg (R15). DO NOT MODIFY R15!
+
+	INC InterrNumb			; increment interruption number register                             
+	CPI InterrNumb, 229		; InterrNumb==230 -> Z==1                                          
+	BREQ minuteDone				; Z==1 -> branch to minutedone!				
+	Ovf0Isr_end:                  	; minutes(R18): minute number
+	out SREG,rSreg			; restore status register from temporary register                    
+	RETI				; return from interrupt subroutine
+
+minuteDone:
+	INC minutes			; incremento di 1 i minuti
+  	CPI minutes,60  		; minutes==60 -> Z == 1
+  	BREQ hourDone   		; z==1 <-> minutes == 60 -> incremento le ore!
+minuteDoneEnding:                 	; this label is useless! but I added it for symmetry to Ovf0Isr block
+	rjmp Ovf0Isr_end       
+	
 ```
-2. in the "INT - SERVICE ROUT." section, in the Ovf0Isr (timer overflow interrupt subroutine) section:  
-**???***
-## continua
-in practice: I need to store 84375216 in 3 bytes. HOW??
-
-
 
 
 # SETTING SLEEP
@@ -141,6 +156,9 @@ OUT MCUCR, R16
 ; free: R0 to R14
 .def rSreg = R15 ; Save/Restore status port
 .def rmp = R16 ; Define multipurpose register
+.def InterrNumb = R17		; numero di interrupt. appena raggiunge 230, è 1 min!-> incremento registro minuti! 
+.def minutes = R18		; numero minuti. quando raggiunge 1440, ho raggiunto 12 ore!
+.def hours = R19
 ; free: R17 to R29
 ; used: R31:R30 = Z for ...
 ;
@@ -184,11 +202,22 @@ OUT MCUCR, R16
 ;  I N T - S E R V I C E   R O U T . (Add all interrupt service routines here)
 
 ; **********************************
-Ovf0Isr: 
-	in rSreg, SREG			; save status register SREG into temporary register rSreg (R15)
-	; generic code if you need. DO NOT modify rSreg (R15)!
-	out SREG,rSreg			; restore status register from temporary register
+Ovf0Isr:
+	in rSreg, SREG			; save status register SREG into temporary register rSreg (R15). DO NOT MODIFY R15!
+
+	INC InterrNumb			; increment interruption number register                             
+	CPI InterrNumb, 230		; InterrNumb==230 -> Z==1                                          
+	BREQ minuteDone				; Z==1 -> branch to minutedone!				
+	Ovf0Isr_end:                  	; minutes(R18): minute number
+	out SREG,rSreg			; restore status register from temporary register                    
 	RETI				; return from interrupt subroutine
+
+minuteDone:
+	INC minutes			; incremento di 1 i minuti
+  	CPI minutes,60  		; minutes==60 -> Z == 1
+  	BREQ hourDone   		; z==1 <-> minutes == 60 -> incremento le ore!
+minuteDoneEnding:                 	; this label is useless! but I added it for symmetry to Ovf0Isr block
+	rjmp Ovf0Isr_end       
 ; **********************************
 ;  M A I N   P R O G R A M   I N I T
 ; **********************************
