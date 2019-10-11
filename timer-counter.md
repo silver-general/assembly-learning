@@ -1,6 +1,15 @@
 short intro at https://exploreembedded.com/wiki/AVR_Timer_programming
 
 good explanation at http://www.avr-asm-tutorial.net/avr_en/starter/starter.html
+
+# QUESTIONS: 
+1. why stack pointer can't address position higher than 0x60?
+2. in the program template it only loads stack pointer low, but the ATtiny has 512bytes of SRAM, so it needs the high bits! why is that?
+3. where in the guide should I put the stack operation part?
+4. how big is the stack? as big as the remaining SRAM? 
+5. push and pop seem not to send data to the stack. what?????????????????????????????????????????????
+
+
 # intro
 
 timer/counter is an independent unit inside the MCU. it's used for:
@@ -52,19 +61,23 @@ the bits are: D7,D6,D,D4,D3,D2,D1,D0
 ; TIMER MODE: see "TCCR0A - Timer/Counter  Control Register A"
 ; default is "normal" -> 0:0 in bites 1:0 -> no operation needed for a simple timer!
 
+; ENABLE COUNTER OVERFLOW FLAG   -> see manual, 11.9.7
+ldi R16,1<<TOIE0                 ; TOIE0 is the bit1 int TIMSK, timer counter interrupt mask register    
+out TIMSK,R16                    ; 
+
 ; TIMER SPEED: see "TCCR0B - Timer/Counter Control Register B" in the include file to use CS00,CS01,...
 ; CHOOSE 1, COMMENT THE OTHERS:
 clr R16                          ; 00000000 -> no timer
-ldi R16, 1<<CS00                 ; 00000001 -> clk mode
+ldi R16, 1<<CS00                 ; 00000001 -> clk mode 
 ldi R16, (1<<CS00)|(1<<CS02)     ; 00000101 -> clk/1024 mode
 
-out TCCR0B, R16                  ; sets the bits in the control register
+out TCCR0B, R16                  ; sets the bits in the timer control register
 ```
 
 ## when the timer overflows
 * TIFR, timer/counter interrupt flag register sets the bit1, TOV0, to 1. 
  * it is then restored to 0 during the interrupt sequence, or by software.
-* in order to have an interrupt, you must first enable the timer counter overflow interrupt enabler, see 11.9.9
+* in order to have an interrupt, you must **first enable the timer counter overflow interrupt enabler, see 11.9.7**
  * in TIMSK register, set bit1 (TOIE0) to 1
 
 * when an interrupt condition occurs, the CPU does the following:
@@ -102,9 +115,90 @@ a stack is a chunk of memory in the SRAM. see **"data memory declaration" in the
 ```
 
 
-# QUESTIONS: 
-1. why stack pointer can't address position higher than 0x60?
-2. in the program template it only loads stack pointer low, but the ATtiny has 512bytes of SRAM, so it needs the high bits! why is that?
-3. where in the guide should I put the stack operation part?
-4. how big is the stack? as big as the remaining SRAM? 
-5. push and pop seem not to send data to the stack. what?????????????????????????????????????????????
+
+# timer interrupt vectors
+in AVR-sim create a file not comprehensive, interrupts enabled.
+```
+; ***********************************
+; DIRECTIVES
+; ***********************************
+.nolist
+.include "tn85def.inc" ; Define device ATtiny85
+.list
+;
+.cseg
+.org 000000
+
+; **********************************
+;       R E G I S T E R S -------------> note this is not in the "not comprehensive" file, I added it later, see below
+; **********************************
+;
+; free: R0 to R14
+.def rSreg = R15   ; storage register for status register (store it here during interrupts)
+
+
+; **********************************
+; R E S E T  &  I N T - V E C T O R S    -> here are places where you arrive when interrupts happen, and whence you jump 
+; **********************************
+	rjmp Main ; Reset vector
+	reti ; INT0
+	reti ; PCI0
+	reti ; OC1A
+	reti ; OVF1
+	rjmp Ovf0Isr ; OVF0
+	reti ; ERDY
+	reti ; ACI
+	reti ; ADCC
+	reti ; OC1B
+	reti ; OC0A
+	reti ; OC0B
+	reti ; WDT
+	reti ; USI_START
+	reti ; USI_OVF
+; **********************************
+;  I N T - S E R V I C E   R O U T .       ; here are the INTERRUPT subroutines, you jump here from the jump vector list!
+; **********************************
+Ovf0Isr:				           ; subroutine in case of timer0 overflow
+  in rSreg,SREG 		     ; Save the SREG (status register) in sSreg (temporary register, set to R15 in "registers" section)
+  
+  ; ... further code
+  
+  out SREG,rSreg                     ; Restore the SREG. puts rSreg into SREG	
+  reti ; Return from interrupt
+; **********************************
+;  M A I N   P R O G R A M   I N I T
+; **********************************
+Main:
+.ifdef SPH ; if SPH is defined
+  ldi rmp,High(RAMEND)
+  out SPH,rmp ; Init MSB stack pointer
+  .endif
+	ldi rmp,Low(RAMEND)
+	out SPL,rmp ; Init LSB stack pointer
+; ...
+	sei ; Enable interrupts
+; **********************************
+;    P R O G R A M   L O O P
+; **********************************
+Loop:
+	rjmp loop
+;
+; End of source code
+                                                          
+```
+1. by default, all interrupts are defined with a RETI intruction in them, so they return to normal if accidentally enabled
+2. OVF1, OVF0 sono gli overflow dei 2 counter dell'ATtiny 
+3. take the line OVF0 and write a jump to Timer0 Overflow Subroutine: **Ovf0Isr**, che poi scrivi nella sezione *INT - SERVICE ROUT* (interrupt service routine, right under the interrupt vector list)
+
+
+#### preserving data
+* register can change during an interrupt -> save in stack OR use exclusively the resources to each interrupt.
+* save status register somewhere. by tradition, it's R15. let's call it *sReg* and define it under *registers* (let's define it above)
+```
+; "I N T - S E R V I C E   R O U T" section
+Ovf0Isr:				           ; subroutine in case of timer0 overflow
+  in rSreg,SREG 		     ; Save the SREG (status register) in sSreg (temporary register, set to R15 in "registers" section)
+  ; ......... further code
+  out SREG,rSreg                     ; Restore the SREG. puts rSreg into SREG	
+  reti ; Return from interrupt
+```
