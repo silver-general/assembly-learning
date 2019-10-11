@@ -49,7 +49,7 @@ the bits are: D7,D6,D,D4,D3,D2,D1,D0
   * **timer mode** in **TCCR0A**: bits 1,0 -> default (0,0): normal. 0 to 255; ... see documentation
 
 * count will be stored in TCNT0
-* whenever it overflows a TimerOverflowFlag (TOV) is set -> HOW?????????????????
+* whenever it overflows a TimerOverflowFlag (TOV0) is set -> in the timer counter interrupt flag register
 
 
 #### let's set a timer, normal mode, at clk/1024
