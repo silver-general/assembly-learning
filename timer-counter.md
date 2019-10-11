@@ -30,7 +30,7 @@ timer/counter is an independent unit inside the MCU. it's used for:
 ## basics
 * 8 bit -> can count 0-255
 * the register that stores the count is TCNT0 (see the include.files for it's definition)
-* if TCNT0 overflows, a TimerOverflowFlag (TOV) is set -> a timer overflow INTERRUPT happens!
+* if TCNT0 overflows, a TimerOverflowFlag (TOV) is set -> IF the overflow interrupt is enabled (in TIMSK, timer counter mask register), a timer overflow INTERRUPT happens!
 * if you put a value into the Output Compare Register (OCR0), whenever the counter reaches it, it sets the Output Compare Flag (OCF0)
 
 given the timer/counter control register 0 (TCCR0):
