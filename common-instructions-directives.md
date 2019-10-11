@@ -3,6 +3,11 @@
 * *$*, or *0x*   is used to indicate hexadecimal values. same as 0x!
 * ...
 
+# REGISTERS OPERATIONS
+some registers are general purpose, others are input/output (of those, some are control registers)
+1. how do I change/set registers?
+2. when do I use MOV, IN, OUT, LDI, et cetera??
+
 # expressions
 https://www.microchip.com/webdoc/avrassembler/avrassembler.wb_expressions.html
 
