@@ -202,3 +202,23 @@ Ovf0Isr:				           ; subroutine in case of timer0 overflow
   out SREG,rSreg                     ; Restore the SREG. puts rSreg into SREG	
   reti ; Return from interrupt
 ```
+
+# SECTION 2: DATE AND TIME
+how many second is a tick of timer, if I tick every 1024 clock cycles?
+* if I get 1M ticks/second, I have 1ns/tick. 1024 ticks last 1024ns=1.024ms. to count to a second, I need 976.5625 ticks 
+* once I have a second, 60 of them become a minute
+* once I have a minute, I have an hour
+* up to 12/24 hours and I'm done.
+
+#### let's store seconds in R14, minutes in R13, hours in R12
+* define register names under "REGISTERS" sections
+```
+.def seconds = R14
+.def minutes = R13
+.def hours = R12
+```
+
+
+
+
+
