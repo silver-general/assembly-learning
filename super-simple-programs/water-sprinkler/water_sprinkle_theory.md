@@ -28,7 +28,7 @@ out TIMSK,R16                    ; not whenever it overflows an interruption hap
 ; TIMER SPEED: see "TCCR0B - Timer/Counter0 Control Register B" in the include file to use CS00,CS01,...
 ; CHOOSE 1, COMMENT THE OTHERS:
 ;clr R16                          ; 00000000 -> no timer
-ldi R16, 1<<CS00                  ; 00000001 -> clk mode -> 1 tick / clock cycle. 10^6s=1ns for 1 clock cycle
+ldi R16, 1<<CS00                  ; 00000001 -> clk mode -> 1 tick / clock cycle. 10^6s=1micros for 1 clock cycle
 ;ldi R16, (1<<CS00)|(1<<CS02)     ; 00000101 -> clk/1024 mode -> if clk is 10^6 -> this is what I need!
 
 out TCCR0B, R16                  ; sets the bits in the timer control register
