@@ -43,7 +43,7 @@ the bits are: D7,D6,D,D4,D3,D2,D1,D0
 
 # how to set a timer
 
-* the **count** is taken in the 8bit register Timer Counter 0: **"TCNT0"**
+* the **count** is taken in the 8bit register Timer Counter 0: **"TCNT0"** (max value 255, then it overflows!->flag raised)
 * the **timer settings** are selected through the bits in Timer Counter Control Register: 
   * **frequency** of clock in **TCCR0B**: bits 2,1,0 -> 000:no timer; 001: clock speed; ... see documentation
   * **timer mode** in **TCCR0A**: bits 1,0 -> default (0,0): normal. 0 to 255; ... see documentation
