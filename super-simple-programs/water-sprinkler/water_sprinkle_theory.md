@@ -113,7 +113,7 @@ OUT MCUCR, R16
 ```
 ;
 ; ***********************************
-; * PROGRAM COUNTS TO 1 SECOND        *
+; * PROGRAM COUNTS SECONDS, MINUTES, HOURS *
 ; * ATtiny85 *
 ; * (C)2019 by Alberto Morgana        *
 ; ***********************************
@@ -157,7 +157,7 @@ OUT MCUCR, R16
 ; free: R0 to R14
 .def rSreg = R15 ; Save/Restore status port
 .def rmp = R16 ; Define multipurpose register
-.def InterrNumb = R17		; numero di interrupt. appena raggiunge 230, è 1 min!-> incremento registro minuti! 
+.def InterrNumb = R17		; numero di interrupt. appena raggiunge 230, è 1 min!-> incremento registro minuti!
 .def minutes = R18		; numero minuti. quando raggiunge 1440, ho raggiunto 12 ore!
 .def hours = R19
 ; free: R17 to R29
@@ -204,21 +204,26 @@ OUT MCUCR, R16
 
 ; **********************************
 Ovf0Isr:
-	in rSreg, SREG			; save status register SREG into temporary register rSreg (R15). DO NOT MODIFY R15!
+	in rSreg, SREG			; save status register SREG into temporary register rSreg (R15)
+	; generic code if you need. DO NOT modify rSreg (R15)!
 
-	INC InterrNumb			; increment interruption number register                             
-	CPI InterrNumb, 230		; InterrNumb==230 -> Z==1                                          
-	BREQ minuteDone				; Z==1 -> branch to minutedone!				
-	Ovf0Isr_end:                  	; minutes(R18): minute number
-	out SREG,rSreg			; restore status register from temporary register                    
+	INC InterrNumb			; increment interruption number register                             ; REGISTRI IN USO
+	CPI InterrNumb, 229		; InterrNumb==229 -> Z==1                                          ; rSreg(R15): status register address
+	BREQ minuteDone				; Z==1 -> branch to minutedone!                                    ; InterrNum(R17): interrupts number
+Ovf0Isr_end:                                                                               ; minutes(R18): minute number
+	out SREG,rSreg			; restore status register from temporary register                    ; hours(R19): hour number
 	RETI				; return from interrupt subroutine
 
 minuteDone:
 	INC minutes			; incremento di 1 i minuti
-  	CPI minutes,60  		; minutes==60 -> Z == 1
-  	BREQ hourDone   		; z==1 <-> minutes == 60 -> incremento le ore!
-minuteDoneEnding:                 	; this label is useless! but I added it for symmetry to Ovf0Isr block
-	rjmp Ovf0Isr_end       
+  CPI minutes,60  ; minutes==60 -> Z == 1
+  BREQ hourDone   ; z==1 <-> minutes == 60 -> incremento le ore!
+minuteDoneEnding:                                          ; this label is useless! but I added it for symmetry to Ovf0Isr block
+	rjmp Ovf0Isr_end
+
+hourDone:
+  INC hours
+  rjmp Ovf0Isr_end
 ; **********************************
 ;  M A I N   P R O G R A M   I N I T
 ; **********************************
@@ -240,8 +245,8 @@ Main:
 ; default is "normal" -> 0:0 in bites 1:0 -> no operation needed for a simple timer!
 
 ; ENABLE COUNTER OVERFLOW FLAG   -> see manual, 11.9.7
-ldi R16,1<<TOIE0                 ; TOIE0 is the bit1 int TIMSK, timer counter interrupt mask register    
-out TIMSK,R16                    ; 
+ldi R16,1<<TOIE0                 ; TOIE0 is the bit1 int TIMSK, timer counter interrupt mask register
+out TIMSK,R16                    ;
 
 ; TIMER SPEED: see "TCCR0B - Timer/Counter Control Register B" in the include file to use CS00,CS01,...
 ldi R16, (1<<CS00)|(1<<CS02)    ; 00000101 -> clock/1024 mode; 00000001 -> clock mode
@@ -249,17 +254,31 @@ out TCCR0B, R16                 ; sets the bits in the timer control register ->
 				; counts every 1024 clock cycles
 				; if 1 clk is 1 ns -> counts every 1024ns = 1.024ms
 
+
+; ANALISI
+; il timer parte: 10 istruzioni, 11ns
+;
+; a) 1tick/clk: aspettative: primo interrupt dopo 0.256 ms
+;               realtà:      interrupt: 1st at 271ns, 2nd at 526ns, 3rd at 783ns so about 255-257ns each
+; DOMANDA: di quanto è l'errore? di quanto me lo porto dietro, dopo 12h?
+;
+; 1tick/(1024clk): aspettative: primo interrupt dopo 262.144 ms!
+;
+
+
+
 ;*****SLEEP MODE ENABLING*****
 LDI R16,(1<<SE) ; NOTE: SE is a constant, value 5
-OUT MCUCR, R16 
+OUT MCUCR, R16
 
 ; **********************************
 ;    P R O G R A M   L O O P
 ; **********************************
 ;
-Loop:	
+Loop:
 ;	*****SLEEP ACTIVATION*****
-	SLEEP	
+
+	SLEEP
 	rjmp loop
 ;
 ; End of source code
@@ -267,5 +286,5 @@ Loop:
 ; (Add Copyright information here, e.g.
 ; .db "(C)2019 by Gerhard Schmidt  " ; Source code readable
 ; .db "C(2)10 9ybG reahdrS hcimtd  " ; Machine code format
-;                                                                      
+;                                                                    
 ```
