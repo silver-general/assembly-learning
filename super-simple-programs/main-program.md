@@ -176,3 +176,14 @@ Loop:
 ; .db "C(2)10 9ybG reahdrS hcimtd  " ; Machine code format
 ;     
 ```
+
+### continua
+* dopo aver imparato a contare secondi, minuti, ore: devo attivare un pin in OUTPUT e fornire voltaggio HIGH quando raggiungo 8h. 
+* metto un controllo ogni volta che incremento l'ora, se il registro arriva a 8: resetto ore, min, sec, partono 10s di sprinkling
+* NOTA: il timer continua durante lo sprinkling, ma il prossimo interrupt è in 1024 cicli, quindi plenty of time per finire le subroutines.
+* nota: quando attivo la porta come out, posso anche rimettere a dormire o continuare 
+
+#### quindi
+raggiungo 8h, è il momento di settare un pin in output e HIGH. 
+
+* mi servono 2 tipi di interrupt: uno per contare fino a 10s, l'altro per contare fino a 8 ore. come fare????
