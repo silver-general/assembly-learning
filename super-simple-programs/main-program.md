@@ -1,7 +1,28 @@
+* dopo aver imparato a contare secondi, minuti, ore: devo attivare un pin in OUTPUT e fornire voltaggio HIGH quando raggiungo 8h. 
+* metto un controllo ogni volta che incremento l'ora, se il registro arriva a 8: resetto ore, min, sec, partono 10s di sprinkling
+* NOTA: il timer continua durante lo sprinkling, ma il prossimo interrupt è in 1024 cicli, quindi plenty of time per finire le subroutines.
+* nota: quando attivo la porta come out, posso anche rimettere a dormire o continuare 
+
+#### quindi
+raggiungo 8h, è il momento di settare un pin in output e HIGH. 
+
+* quando entro in hourDone incremento le ore, se arrivo a 8 resetto minuti e ore, accendo il pin0 su HIGH.
+* come lo spengo poi?		
+  * metto dei nop in loop sotto la stessa subroutine (sono in un interrupt, non posso averne altri)
+  * accendo, esco dalla subroutine, poi riaccendo
+* uso un registro per segnalare lo sprinkle mode? 
+
+
+# codice
+* uso un registro per sapere se è in modalità sprinkle o no:	
+	* sprinkle_on è settato a 1 dopo 8 ore, settato a 0 dopo 10s
+	* sprinkle_on==0 -> no sprinkle, sprinkle_on==1 -> sprinkling!
+	* se sprinkle_on==1, conto gli interrupts (per avere 10s: 39 interrupts se 1interrupt/256*1024 cicli clock)
+
 ```
 ;
 ; ***********************************
-; * PROGRAM COUNTS SECONDS, MINUTES, HOURS *
+; * PROGRAM opens output each minute for 10s *
 ; * ATtiny85 *
 ; * (C)2019 by Alberto Morgana        *
 ; ***********************************
@@ -48,6 +69,7 @@
 .def InterrNumb = R17		; numero di interrupt. appena raggiunge 230, è 1 min!-> incremento registro minuti!
 .def minutes = R18		; numero minuti. quando raggiunge 1440, ho raggiunto 12 ore!
 .def hours = R19
+.def sprinkle_on = R20 ; R20==0 no sprinkle, R20==1 sprinkle,10s!
 ; free: R17 to R29
 ; used: R31:R30 = Z for ...
 ;
@@ -92,17 +114,33 @@
 
 ; **********************************
 Ovf0Isr:
-	in rSreg, SREG			; save status register SREG into temporary register rSreg (R15)
-	; generic code if you need. DO NOT modify rSreg (R15)!
 
-	INC InterrNumb			; increment interruption number register                             ; REGISTRI IN USO
-	CPI InterrNumb, 229		; InterrNumb==229 -> Z==1                                          ; rSreg(R15): status register address
+	in rSreg, SREG			; save status register SREG into temporary register rSreg (R15)
+	; DO NOT modify rSreg (R15)!
+
+  INC InterrNumb			; increment interruption number register                             ; REGISTRI IN USO
+
+  ; SE sprinkle_on==1 devo contare 10s=39 interrupts!
+  CPI sprinkle_on, 1 ;
+  BRNE continue        ; se non è attivo: salta la parte in cui controlli che i secondi siano < 10!
+
+; this happens if sprinkle is 1
+; have 10 seconds passed?   if 39 is reached, stop sprinkling-> set sprinkle_on to 0
+  CPI InterrNumb, 39
+  BRNE continue  ; if 39 is not reached -> continue below
+
+; this happens if 39 is reached: end sprinkling!
+  LDI sprinkle_on,0
+
+continue:
+  CPI InterrNumb, 229		; InterrNumb==229 -> Z==1                                          ; rSreg(R15): status register address
 	BREQ minuteDone				; Z==1 -> branch to minutedone!                                    ; InterrNum(R17): interrupts number
 Ovf0Isr_end:                                                                               ; minutes(R18): minute number
 	out SREG,rSreg			; restore status register from temporary register                    ; hours(R19): hour number
 	RETI				; return from interrupt subroutine
 
-minuteDone:
+minuteDone:                                                                                 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 	INC minutes			; incremento di 1 i minuti
   CPI minutes,60  ; minutes==60 -> Z == 1
   BREQ hourDone   ; z==1 <-> minutes == 60 -> incremento le ore!
@@ -111,7 +149,20 @@ minuteDoneEnding:                                          ; this label is usele
 
 hourDone:
   INC hours
+  CPI hours,8      ; hours==8 -> Z == 1
+  BREQ sprinkle    ; after 8 hours: reset timer seconds, minutes,hours, activate sprinkle_on!
   rjmp Ovf0Isr_end
+
+;*****SPRINKLE*****
+sprinkle:            ; azzero r18, r19 (minuti, ore), attivo modalità sprinkle, torno al main
+ldi minutes,0
+ldi hours, 0
+ldi sprinkle_on,1
+rjmp Ovf0Isr_end
+
+
+
+
 ; **********************************
 ;  M A I N   P R O G R A M   I N I T
 ; **********************************
@@ -137,7 +188,7 @@ ldi R16,1<<TOIE0                 ; TOIE0 is the bit1 int TIMSK, timer counter in
 out TIMSK,R16                    ;
 
 ; TIMER SPEED: see "TCCR0B - Timer/Counter Control Register B" in the include file to use CS00,CS01,...
-ldi R16, (1<<CS00)|(1<<CS02)    ; 00000101 -> clock/1024 mode; 00000001 -> clock mode
+ldi R16, (1<<CS00)|(1<<CS02)    ; 00000101 -> clock/1024 mode; 00000001 -> clock mode                                     ;;;;;;;;;;;;;;;
 out TCCR0B, R16                 ; sets the bits in the timer control register -> timer activated!
 				; counts every 1024 clock cycles
 				; if 1 clk is 1 ns -> counts every 1024ns = 1.024ms
@@ -152,38 +203,57 @@ out TCCR0B, R16                 ; sets the bits in the timer control register ->
 ;
 ; 1tick/(1024clk): aspettative: primo interrupt dopo 262.144 ms!
 ;
-
-
+;*****SET PIN0 OF PORTB AS OUTPUT and LOW*****
+sbi DDRB, DDB0 ; sets data direction register bit 1 -> output
+cbi PORTB,PORTB0
 
 ;*****SLEEP MODE ENABLING*****
 LDI R16,(1<<SE) ; NOTE: SE is a constant, value 5
 OUT MCUCR, R16
+
+
+
 
 ; **********************************
 ;    P R O G R A M   L O O P
 ; **********************************
 ;
 Loop:
-;	*****SLEEP ACTIVATION*****
+; - - - - - ACTIVATE SLEEP
+SLEEP
 
-	SLEEP
-	rjmp loop
+; - - - - - se lo sprinkle mode è attivato -> jump to sprinkle_activate
+CPI sprinkle_on, 1
+BREQ sprinkle_activate
+; -----------
+; -----------
+; -----------
+
+rjmp loop
+
+
+; * * * * * 10s_sprinkle * * * * *
+; per quanto tempo? 10s. se ho 1interrupt ogni 256ms -> ogni 39 interrupts -> segno nel blocco dove incremento interruptNum
+sprinkle_activate:
+sbi PORTB,PORTB0      ; open pin0 of port B as output, high
+rjmp loop
+
+
+
+sprinkle_inactivate:
+cbi PORTB,PORTB0
+rjmp loop
+;
+;
+;
+;
+;
+;
+;
 ;
 ; End of source code
 ;
 ; (Add Copyright information here, e.g.
 ; .db "(C)2019 by Gerhard Schmidt  " ; Source code readable
-; .db "C(2)10 9ybG reahdrS hcimtd  " ; Machine code format
-;     
+; .db "C(2)10 9ybG reahdrS hcimtd  " ; Machine code format         
 ```
-
-### continua
-* dopo aver imparato a contare secondi, minuti, ore: devo attivare un pin in OUTPUT e fornire voltaggio HIGH quando raggiungo 8h. 
-* metto un controllo ogni volta che incremento l'ora, se il registro arriva a 8: resetto ore, min, sec, partono 10s di sprinkling
-* NOTA: il timer continua durante lo sprinkling, ma il prossimo interrupt è in 1024 cicli, quindi plenty of time per finire le subroutines.
-* nota: quando attivo la porta come out, posso anche rimettere a dormire o continuare 
-
-#### quindi
-raggiungo 8h, è il momento di settare un pin in output e HIGH. 
-
-* mi servono 2 tipi di interrupt: uno per contare fino a 10s, l'altro per contare fino a 8 ore. come fare????
