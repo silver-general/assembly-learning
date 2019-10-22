@@ -72,6 +72,36 @@ NOTE: use the name of arduino!
 
 * -p <partno>: 
 To get a list of parts supported by avrdude, type in avrdude -c avrisp (** it doesnt matter if you're not useing an avrisp programmer** ) without a part number into the command line. Don't memorize this list, just glance over it to get an idea of the chips that are supported.
-****
+
 C:\>avrdude -c avrisp
 avrdude: No AVR part has been specified, use "-p Part"
+
+
+* -P <port>
+
+This switch tells avrdude where to look for your programmer. If you are using a USB connected device, you can just use -P usb or, leave it out. The programmer automatically knows when the programmer is a USB device.
+
+**note** in linux the port is /dev/ttyATM0
+
+* -U <memtype>:r|w|v:<filename>[:format]:
+
+OK we're at the important part. This is where we actually get around to telling avrdude how to put the data onto the chip. This command is rather complex, but we'll break it down.
+
+<memtype> - can be flash, eeprom, hfuse (high fuse), lfuse (low fuse), or efuse (extended fuse)
+r|w|v - can be r (read), w (write), v (verify)
+<filename> - the input (writing or verifying) or output file (reading)
+[:format] - optional, the format of the file. You can leave this off for writing, but for reading use i for Intel Hex (the prevailing standard )
+
+For example:
+
+    To write a file called firmware.hex to the flash use the command: -U flash:w:firmware.hex
+    To verify a file called mydata.eep from the eeprom use the command -U eeprom:v:mydata.eep
+    To read the low fuse into a file use the command -U lfuse:r:lfusefile.hex:i
+
+## now to the fun part.
+* hex file in home folder (whyyyy)?
+* avr dude parameters:
+ * what programmer and what port: arduino, ttyATM0. USE -P /dev/ttyATM0 !
+
+## complications
+can't run  avrdude -v -p atmega328p -c arduino -P /dev/ttyACM0 -b 57600 -D -U D
