@@ -237,6 +237,72 @@ Loop:
 # CODE 2: blink every 1.048s
 it should work. try it on a real at tiny, because the simulator is soooo slow!
 ```
+;
+; ***********************************
+; This guy blinks every 1.048576s
+; (1 interrupt every 262.144ms)
+;
+;
+;
+;
+;
+; ***********************************
+;
+.nolist
+.include "tn85def.inc" ; Define device ATtiny85
+.list
+;
+; **********************************
+;        H A R D W A R E
+; **********************************
+;
+; (F2 adds ASCII pin-out for device here)
+;
+; **********************************
+;  P O R T S   A N D   P I N S
+; **********************************
+;
+; (Add symbols for all ports and port pins with ".equ" here)
+; (e.g. .equ pDirD = DDRB ; Define a direction port
+;  or
+;  .equ bMyPinO = PORTB0 ; Define an output pin)
+;
+; **********************************
+;   A D J U S T A B L E   C O N S T
+; **********************************
+;
+; (Add all user adjustable constants here, e.g.)
+; .equ clock=1000000 ; Define the clock frequency
+;  .equ time = ADD TIME HERE
+
+;
+; **********************************
+;  F I X  &  D E R I V.  C O N S T
+; **********************************
+;
+; (Add symbols for fixed and derived constants here)
+;
+; **********************************
+;       R E G I S T E R S
+; **********************************
+;
+; free: R0 to R14
+.def rSreg = R15 ; Save/Restore status port
+.def rmp = R16 ; Define multipurpose register
+
+.def interrNum = R18    ; counts number of interrupts. starts at 0.
+.def led_state = R17    ; 0 for off, 1 for on
+; free: R17 to R29
+; used: R31:R30 = Z for ...
+;
+; **********************************
+;           S R A M
+; **********************************
+;
+.dseg
+.org SRAM_START
+; (Add labels for SRAM locations here, e.g.
+; sLabel1:
 ;   .byte 16 ; Reserve 16 bytes)
 ;
 ; **********************************
@@ -358,7 +424,7 @@ Loop:
 ; (Add Copyright information here, e.g.
 ; .db "(C)2019 by Gerhard Schmidt  " ; Source code readable
 ; .db "C(2)10 9ybG reahdrS hcimtd  " ; Machine code format
-;                                                                        
+;  
 ```
 
 
