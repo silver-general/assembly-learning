@@ -46,7 +46,7 @@ see https://www.microchip.com/webdoc/avrassembler/avrassembler.wb_directives.htm
 start with a "."
 
 ### .ecu *name* *constant*
-equicalent to #def in C. assigns a constant to a name. it can't be modified!
+equivalent to #def in C. assigns a constant to a name. it can't be modified!
 
 ### .org
 
