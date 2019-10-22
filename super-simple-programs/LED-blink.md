@@ -25,5 +25,7 @@ should be fairly simple
 * I need a blink every tot seconds. let's add a constant to be used. 
   * use .equ to define the desired seconds, as ".equ time = 13"
   * WHERE: adjustable constants section!
-  * time is the number of interrupts: 1 interrupt every 262.144ms -> to have 1s: 3.81469 interrupts -> not very precise!
-    * if: 
+  * time is the number of interrupts. it depends on the timer mode chosen cases:
+   * 
+   * 
+   * 
