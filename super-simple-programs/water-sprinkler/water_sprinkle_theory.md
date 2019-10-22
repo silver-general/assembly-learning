@@ -25,13 +25,16 @@ using the ATtiny85 8-bit timer/counter0. see official documentation, chapter 11
 ldi R16,1<<TOIE0                 ; TOIE0 is the bit1 int TIMSK, timer counter 0 interrupt mask register    
 out TIMSK,R16                    ; not whenever it overflows an interruption happens! -> see OVF0 in "interrupt vectors"
 
-; TIMER SPEED: see "TCCR0B - Timer/Counter0 Control Register B" in the include file to use CS00,CS01,...
+; TIMER SPEED: see "TCCR0B - Timer/Counter0 Control Register B" in the include file to use CS00,CS01,CS02
 ; CHOOSE 1, COMMENT THE OTHERS:
-;clr R16                          ; 00000000 -> no timer
-ldi R16, 1<<CS00                  ; 00000001 -> clk mode -> 1 tick / clock cycle. 10^6s=1micros for 1 clock cycle
-;ldi R16, (1<<CS00)|(1<<CS02)     ; 00000101 -> clk/1024 mode -> if clk is 10^6 -> this is what I need!
+;clr R16                        ; 00000000 -> no timer
+ldi R16, 1<<CS00                ; 00000001 -> clk mode 	-> 1 tick / clock cycle(=1micros) -> 1 interrupt/256micros
+;ldi R16, (1<<CS01)		; 00000010 -> clk/8 mode -> 1 tick / 8*clock_cycle -> 1tick/8micros -> 						 		     -> 1interrupt/256*8 micros = 1 interrupt / 2.048ms
+;ldi R16, (1<<CS00)|(1<<CS02)   ; 00000101 -> clk/64 mode: 1tick/64clock -> 1interr/256*64clock-> 1interr/16.384ms
+;ldi R16, (1<<CS02) 		; 00000100 -> clk/256 mode: 1tick/clock -> 1interr/256*256clock-> 1interr/65.536ms
+;ldi R16, (1<<CS00)|(1<<CS02)   ; 00000101 -> clk/1024 mode: 1tick/1024clock->1interr/256*1024clock->1interr/262.144ms 
 
-out TCCR0B, R16                  ; sets the bits in the timer control register
+out TCCR0B, R16                 ; sets the bits in the timer control register
 ```
 ## handling timer overflow interrupt
 * when a timer0 overflow interrupt happens (when the counter ticks 255 times) an interrupt happens and the program counter is redirected to the program vector OVF0. there you must put a relative jump "rjmp Ovf0Isr" to the subroutine that you call Ovf0Isr in the "INT SERVICE ROUT." (interruption service routines) section 
